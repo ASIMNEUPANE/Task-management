@@ -1,0 +1,7 @@
+# Run Prettier for backend
+cd server || exit 1
+npm run format || { echo 'Backend Prettier failed'; exit 1; }
+
+# Run Prettier for client
+cd ../client || exit 1
+npm run format || { echo 'Client Prettier failed'; exit 1; }
