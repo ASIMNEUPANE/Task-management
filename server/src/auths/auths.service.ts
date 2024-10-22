@@ -157,9 +157,8 @@ export class AuthsService {
     const refreshToken = generateRefreshToken(payload);
 
     console.log("==================");
-  
 
-    console.log("==================",refreshToken);
+    console.log("==================", refreshToken);
 
     // Store Refresh Token in the database (you may want to hash it)
     await this.prisma.token.create({
