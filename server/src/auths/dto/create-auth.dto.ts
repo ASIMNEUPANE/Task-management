@@ -115,7 +115,8 @@ export class LogInReturnDto {
   };
 
   @ApiProperty()
-  token: string;
+  accessToken: string;
+  // refreshToken: string;
 }
 export class ReturnTrueDto {
   @ApiProperty()

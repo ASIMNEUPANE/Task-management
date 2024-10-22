@@ -2,12 +2,17 @@ import {
   Controller,
   Post,
   Body,
+  Res,
   UploadedFile,
   UseInterceptors,
   ParseFilePipe,
   FileTypeValidator,
   MaxFileSizeValidator,
+  HttpStatus,
+  HttpCode,
+  Req,
 } from "@nestjs/common";
+import { Response, Request } from "express";
 import { ApiTags, ApiResponse, ApiOperation } from "@nestjs/swagger";
 
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -30,6 +35,18 @@ import { diskStorage } from "multer";
 export class AuthsController {
   constructor(private readonly authsService: AuthsService) {}
 
+  //Refresh token
+  @Post("refresh")
+  @ApiOperation({ summary: "Refresh token" })
+  @ApiResponse({
+    status: 200,
+    description: "The found record",
+    type: [ReturnTrueDto],
+  })
+  @ApiResponse({ status: 403, description: "Forbidden." })
+  refreshToken(@Body("refreshToken") refreshTokenDto: string) {
+    return this.authsService.refreshAccessToken(refreshTokenDto);
+  }
   // Register User
   @Post("register")
   @ApiOperation({ summary: "Create new user" })
@@ -112,8 +129,28 @@ export class AuthsController {
     type: [LogInReturnDto],
   })
   @ApiResponse({ status: 403, description: "Forbidden." })
-  login(@Body() loginDto: LoginDto) {
-    return this.authsService.login(loginDto.email, loginDto.password);
+  async login(@Body() loginDto: LoginDto, @Res() res: Response) {
+    const loginResult = await this.authsService.login(
+      loginDto.email,
+      loginDto.password,
+      res,
+    );
+
+    // Send the response as JSON
+    return res.status(200).json(loginResult);
+  }
+
+  // LogOut User
+  @Post("logout")
+  @ApiOperation({ summary: "Logout user" })
+  @ApiResponse({
+    status: 200,
+    description: "Logout successful",
+  })
+  @ApiResponse({ status: 403, description: "Forbidden." })
+  @HttpCode(HttpStatus.OK)
+  async logout(@Req() req: Request, @Res() res: Response) {
+    return this.authsService.logout(req, res);
   }
 
   // generateFPToken

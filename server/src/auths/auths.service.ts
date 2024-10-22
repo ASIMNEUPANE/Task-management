@@ -5,14 +5,45 @@ import { Prisma } from "@prisma/client";
 import { BcryptPass } from "../utils/Bcrypt";
 import { generateOTP, verifyOTP } from "../utils/otp";
 import { mailer } from "../utils/mailer";
-import { generateJWT } from "../utils/jwt";
+import { generateJWT, generateRefreshToken } from "../utils/jwt";
+import * as jwt from "jsonwebtoken";
+import { Response, Request } from "express";
 @Injectable()
 export class AuthsService {
   constructor(
     private prisma: PrismaService,
     private bcrypt: BcryptPass,
   ) {}
+  async refreshAccessToken(refreshToken: string): Promise<any> {
+    try {
+      // Verify the refresh token
+      const decoded = jwt.verify(
+        refreshToken,
+        process.env.JWT_REFRESH_SECRET,
+      ) as any;
 
+      const { data } = decoded;
+      if (!data)
+        throw new HttpException("Invalid token", HttpStatus.BAD_REQUEST);
+
+      const user = await this.prisma.user.findUnique({
+        where: { id: data.id },
+      });
+      if (!user)
+        throw new HttpException("User not found", HttpStatus.UNAUTHORIZED);
+
+      // Generate a new access token
+      const newAccessToken = generateJWT({
+        id: user.id,
+        email: user.email,
+        roles: user.roles,
+      });
+
+      return { accessToken: newAccessToken };
+    } catch (error) {
+      throw new HttpException("Something went wrong", HttpStatus.BAD_GATEWAY);
+    }
+  }
   async register(createAuthDto: Prisma.UserCreateInput) {
     try {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -47,9 +78,7 @@ export class AuthsService {
       const token = generateOTP();
       const authUSer = { email: user.email, otp: token };
       const x = await this.prisma.auth.create({ data: authUSer });
-      console.log(x);
       const mail = await mailer(user?.email, token);
-      console.log(mail);
       return user;
     } catch (e) {
       console.log(e);
@@ -91,7 +120,11 @@ export class AuthsService {
     return true;
   }
 
-  async login(email: string, password: string): Promise<LogInReturnDto> {
+  async login(
+    email: string,
+    password: string,
+    res: Response,
+  ): Promise<LogInReturnDto> {
     const user = await this.prisma.user.findUnique({ where: { email } });
     if (!user)
       throw new HttpException("User is not available", HttpStatus.BAD_REQUEST);
@@ -120,12 +153,74 @@ export class AuthsService {
       roles: user?.roles,
     };
 
-    const token = generateJWT(payload);
-    console.log(token);
+    const accessToken = generateJWT(payload);
+    const refreshToken = generateRefreshToken(payload);
+
+    console.log("==================");
+  
+
+    console.log("==================",refreshToken);
+
+    // Store Refresh Token in the database (you may want to hash it)
+    await this.prisma.token.create({
+      data: {
+        refreshToken, // Consider hashing before storing
+        userId: user.id,
+        expiresAt: new Date(
+          Date.now() + Number(process.env.JWT_REFRESH_DURATION_MS),
+        ),
+      },
+    });
+
+    console.log("==================");
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Ensure it's secure in production
+      sameSite: "strict",
+      maxAge: +process.env.JWT_REFRESH_DURATION_MS,
+    });
+
     return {
-      user: { name: user.name, roles: user.roles, email: user.email },
-      token,
+      user: { name: user?.name, roles: user?.roles, email: user?.email },
+      accessToken,
     };
+  }
+
+  async logout(req: Request, res: Response): Promise<{ message: string }> {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+      throw new HttpException(
+        "Refresh token is missing",
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // Find and delete the refresh token from the database
+    const tokenRecord = await this.prisma.token.findUnique({
+      where: { refreshToken },
+    });
+
+    if (!tokenRecord) {
+      throw new HttpException(
+        "Refresh token not found",
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // Delete the token from the database
+    await this.prisma.token.delete({
+      where: { refreshToken },
+    });
+
+    // Clear the refresh token cookie from the client
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
+    return { message: "Logged out successfully" };
   }
 
   async generateFPToken(email: string): Promise<boolean> {

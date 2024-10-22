@@ -7,6 +7,7 @@ import * as OTP from "../utils/otp";
 import * as mail from "../utils/mailer";
 import * as JWT from "../utils/jwt";
 import { HttpException, HttpStatus } from "@nestjs/common";
+import { Response } from "express"; // Import Response type
 
 const expectedResult = {
   id: "1",
@@ -40,8 +41,14 @@ const authDbdata = {
 describe("AuthsService", () => {
   let service: AuthsService;
   let prismaService: PrismaService;
+  let mockResponse: Partial<Response>;
 
   beforeEach(async () => {
+    mockResponse = {
+      cookie: jest.fn(), // Mock the cookie method
+      json: jest.fn(), // Mock the json method (if needed)
+      status: jest.fn().mockReturnThis(), // Mock the status method to allow chaining
+    };
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthsService,
@@ -55,11 +62,15 @@ describe("AuthsService", () => {
               findUnique: jest.fn(),
               update: jest.fn(),
               delete: jest.fn(),
+              cookie: jest.fn(),
             },
             user: {
               findUnique: jest.fn(),
               create: jest.fn(),
               update: jest.fn(),
+            },
+            token: {
+              create: jest.fn(),
             },
           },
         },
@@ -222,12 +233,20 @@ describe("AuthsService", () => {
       jest
         .spyOn(prismaService.user, "findUnique")
         .mockResolvedValue(expectedResult);
+      const tokenCreateMock = jest
+        .spyOn(prismaService.token, "create")
+        .mockResolvedValue(null);
+
       jest
         .spyOn(BcryptPass.prototype, "comparePasswords")
         .mockResolvedValue(true);
       const token = "generatedJWTtoken";
       jest.spyOn(JWT, "generateJWT").mockReturnValue(token);
-      const result = await service.login(expectedResult.email, "Helloworld@2");
+      const result = await service.login(
+        expectedResult.email,
+        "Helloworld@2",
+        mockResponse as Response,
+      );
       const mockPayload = {
         id: expectedResult.id,
         email: expectedResult.email,
@@ -239,8 +258,22 @@ describe("AuthsService", () => {
           roles: expectedResult.roles,
           email: expectedResult.email,
         },
-        token: token,
+        accessToken: token,
       });
+
+      expect(tokenCreateMock).toHaveBeenCalledWith({
+        data: {
+          refreshToken: expect.any(String), // Use expect.any to check if it receives a string
+          userId: expectedResult.id,
+          expiresAt: expect.any(Date), // Check if a Date object is passed
+        },
+      });
+      expect(mockResponse.cookie).toHaveBeenCalledWith(
+        "refreshToken",
+        expect.any(String),
+        expect.any(Object),
+      );
+
       expect(prismaService.user.findUnique).toHaveBeenCalledWith({
         where: { email: expectedResult.email },
       });
@@ -253,7 +286,11 @@ describe("AuthsService", () => {
     it("should thow an error if user not found", async () => {
       jest.spyOn(prismaService.user, "findUnique").mockResolvedValue(null);
       await expect(() =>
-        service.login("asimneupane11@gmail.com", "Helloworld@2"),
+        service.login(
+          "asimneupane11@gmail.com",
+          "Helloworld@2",
+          mockResponse as Response,
+        ),
       ).rejects.toThrow(
         new HttpException("User is not available", HttpStatus.BAD_REQUEST),
       );
@@ -266,9 +303,18 @@ describe("AuthsService", () => {
         .spyOn(prismaService.user, "findUnique")
         .mockResolvedValue({ ...expectedResult, isEmailVerified: false });
       await expect(() =>
-        service.login("asimneupane11@gmail.com", "Helloworld@2"),
+        service.login(
+          "asimneupane11@gmail.com",
+          "Helloworld@2",
+          mockResponse as Response,
+        ),
       ).rejects.toThrow(
         new HttpException("Email is not verified yet", HttpStatus.BAD_REQUEST),
+      );
+      expect(mockResponse.cookie).toHaveBeenCalledWith(
+        "refreshToken",
+        expect.any(String),
+        expect.any(Object),
       );
       expect(prismaService.user.findUnique).toHaveBeenCalledWith({
         where: { email: expectedResult.email },
@@ -279,7 +325,11 @@ describe("AuthsService", () => {
         .spyOn(prismaService.user, "findUnique")
         .mockResolvedValue({ ...expectedResult, isActive: false });
       await expect(() =>
-        service.login("asimneupane11@gmail.com", "Helloworld@2"),
+        service.login(
+          "asimneupane11@gmail.com",
+          "Helloworld@2",
+          mockResponse as Response,
+        ),
       ).rejects.toThrow(
         new HttpException(
           "User is not active . Please contact admin",
@@ -298,7 +348,11 @@ describe("AuthsService", () => {
         .spyOn(BcryptPass.prototype, "comparePasswords")
         .mockResolvedValue(false);
       await expect(() =>
-        service.login("asimneupane11@gmail.com", "Helloworld@2"),
+        service.login(
+          "asimneupane11@gmail.com",
+          "Helloworld@2",
+          mockResponse as Response,
+        ),
       ).rejects.toThrow(
         new HttpException(
           "User or password is incorrect",

@@ -1,5 +1,6 @@
 import { createTransport } from "nodemailer";
-
+console.log(process.env.GMAIL_USER);
+console.log(process.env.GMAIL_PASS);
 const transporter = createTransport({
   host: "smtp.gmail.com",
   port: 465,

@@ -1,3 +1,6 @@
+import * as dotenv from "dotenv"; // Load environment variables from .env file
+dotenv.config(); // Call this to load your environment variables
+
 import { Logger, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
