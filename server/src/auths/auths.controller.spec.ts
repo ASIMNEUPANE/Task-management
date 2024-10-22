@@ -1,10 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AuthsController } from './auths.controller';
-import { AuthsService } from './auths.service';
-import { PrismaService } from '../prisma/prisma.service';
-import { BcryptPass } from '../utils/Bcrypt';
+import { Test, TestingModule } from "@nestjs/testing";
+import { AuthsController } from "./auths.controller";
+import { AuthsService } from "./auths.service";
+import { PrismaService } from "../prisma/prisma.service";
+import { BcryptPass } from "../utils/Bcrypt";
 
-describe('AuthsController', () => {
+describe("AuthsController", () => {
   let controller: AuthsController;
 
   beforeEach(async () => {
@@ -16,7 +16,7 @@ describe('AuthsController', () => {
     controller = module.get<AuthsController>(AuthsController);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(controller).toBeDefined();
   });
 });

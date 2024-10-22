@@ -1,11 +1,11 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { LogInReturnDto } from './dto/create-auth.dto';
-import { PrismaService } from '../prisma/prisma.service';
-import { Prisma } from '@prisma/client';
-import { BcryptPass } from '../utils/Bcrypt';
-import { generateOTP, verifyOTP } from '../utils/otp';
-import { mailer } from '../utils/mailer';
-import { generateJWT } from '../utils/jwt';
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { LogInReturnDto } from "./dto/create-auth.dto";
+import { PrismaService } from "../prisma/prisma.service";
+import { Prisma } from "@prisma/client";
+import { BcryptPass } from "../utils/Bcrypt";
+import { generateOTP, verifyOTP } from "../utils/otp";
+import { mailer } from "../utils/mailer";
+import { generateJWT } from "../utils/jwt";
 @Injectable()
 export class AuthsService {
   constructor(
@@ -28,7 +28,7 @@ export class AuthsService {
 
       if (auth)
         throw new HttpException(
-          'User is already register',
+          "User is already register",
           HttpStatus.BAD_REQUEST,
         );
       const name = await this.prisma.user.findUnique({
@@ -36,7 +36,7 @@ export class AuthsService {
       });
       if (name)
         throw new HttpException(
-          'This username is already in use',
+          "This username is already in use",
           HttpStatus.BAD_REQUEST,
         );
       rest.password = await this.bcrypt.hashPassword(password);
@@ -61,13 +61,13 @@ export class AuthsService {
     const { email, otp } = payload;
     const auth = await this.prisma.auth.findUnique({ where: { email } });
     if (!auth)
-      throw new HttpException('User is not available', HttpStatus.BAD_REQUEST);
+      throw new HttpException("User is not available", HttpStatus.BAD_REQUEST);
     const isValidToken = await verifyOTP(otp);
     if (!isValidToken)
-      throw new HttpException('Token Expired', HttpStatus.BAD_REQUEST);
+      throw new HttpException("Token Expired", HttpStatus.BAD_REQUEST);
     const emailValid = auth?.otp === otp;
     if (!emailValid)
-      throw new HttpException('Token mismatch', HttpStatus.BAD_REQUEST);
+      throw new HttpException("Token mismatch", HttpStatus.BAD_REQUEST);
 
     const user = await this.prisma.user.update({
       where: { email },
@@ -81,7 +81,7 @@ export class AuthsService {
   async regenerateToken(email: string): Promise<boolean> {
     const auth = await this.prisma.auth.findUnique({ where: { email: email } });
     if (!auth)
-      throw new HttpException('User is not available', HttpStatus.BAD_REQUEST);
+      throw new HttpException("User is not available", HttpStatus.BAD_REQUEST);
     const newToken = generateOTP();
     await this.prisma.auth.update({
       where: { email },
@@ -94,15 +94,15 @@ export class AuthsService {
   async login(email: string, password: string): Promise<LogInReturnDto> {
     const user = await this.prisma.user.findUnique({ where: { email } });
     if (!user)
-      throw new HttpException('User is not available', HttpStatus.BAD_REQUEST);
+      throw new HttpException("User is not available", HttpStatus.BAD_REQUEST);
     if (!user?.isEmailVerified)
       throw new HttpException(
-        'Email is not verified yet',
+        "Email is not verified yet",
         HttpStatus.BAD_REQUEST,
       );
     if (!user?.isActive)
       throw new HttpException(
-        'User is not active . Please contact admin',
+        "User is not active . Please contact admin",
         HttpStatus.BAD_REQUEST,
       );
     const isValidPw = await this.bcrypt.comparePasswords(
@@ -111,7 +111,7 @@ export class AuthsService {
     );
     if (!isValidPw)
       throw new HttpException(
-        'User or password is incorrect',
+        "User or password is incorrect",
         HttpStatus.BAD_REQUEST,
       );
     const payload = {
@@ -138,7 +138,7 @@ export class AuthsService {
     });
 
     if (!user)
-      throw new HttpException('User is not available', HttpStatus.BAD_REQUEST);
+      throw new HttpException("User is not available", HttpStatus.BAD_REQUEST);
 
     const otp = generateOTP();
     const auth = await this.prisma.auth.findUnique({ where: { email } });
@@ -164,13 +164,13 @@ export class AuthsService {
   ): Promise<boolean> {
     const auth = await this.prisma.auth.findUnique({ where: { email } });
     if (!auth)
-      throw new HttpException('user not found', HttpStatus.BAD_REQUEST);
+      throw new HttpException("user not found", HttpStatus.BAD_REQUEST);
     const isValidToken = await verifyOTP(otp);
     if (!isValidToken)
-      throw new HttpException('Token expired', HttpStatus.BAD_REQUEST);
+      throw new HttpException("Token expired", HttpStatus.BAD_REQUEST);
     const emailValid = auth?.otp === otp;
     if (!emailValid)
-      throw new HttpException('Token mismatch', HttpStatus.BAD_REQUEST);
+      throw new HttpException("Token mismatch", HttpStatus.BAD_REQUEST);
     const hashPassword = await this.bcrypt.hashPassword(password);
     await this.prisma.user.update({
       where: { email },

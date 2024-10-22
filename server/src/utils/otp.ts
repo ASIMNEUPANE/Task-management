@@ -1,7 +1,7 @@
-import { totp } from 'otplib';
+import { totp } from "otplib";
 totp.options = { digits: 6, step: Number(process.env.OTP_DURATION) };
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-require('dotenv').config();
+require("dotenv").config();
 
 export const generateOTP = () => {
   totp.options = { digits: 6, step: 120 };

@@ -1,14 +1,14 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
-import { PrismaService } from '../prisma/prisma.service';
-import { BcryptPass } from '../utils/Bcrypt';
-import { CreateUserDto } from './dtos/CreateUser.dto';
+import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
+import { Prisma } from "@prisma/client";
+import { PrismaService } from "../prisma/prisma.service";
+import { BcryptPass } from "../utils/Bcrypt";
+import { CreateUserDto } from "./dtos/CreateUser.dto";
 import {
   BlockUserDto,
   DeleteUserDto,
   ResetPasswordDto,
-} from './dtos/update-user.dto';
-import { getReturn } from '../types/type';
+} from "./dtos/update-user.dto";
+import { getReturn } from "../types/type";
 @Injectable()
 export class UserService {
   constructor(
@@ -81,14 +81,14 @@ export class UserService {
   async changePassword(id: string, oldPassword: string, newPassword: string) {
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user)
-      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+      throw new HttpException("User not found", HttpStatus.BAD_REQUEST);
     const isValidOldPass = await this.bcrpt.comparePasswords(
       oldPassword,
       user?.password,
     );
     if (!isValidOldPass)
       throw new HttpException(
-        'oldPassword is incorrect',
+        "oldPassword is incorrect",
         HttpStatus.BAD_REQUEST,
       );
     const newPass = await this.bcrpt.hashPassword(newPassword);
@@ -102,7 +102,7 @@ export class UserService {
   async resetPassword(id: string, payload: ResetPasswordDto) {
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user)
-      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+      throw new HttpException("User not found", HttpStatus.BAD_REQUEST);
 
     const newPass = await this.bcrpt.hashPassword(payload.password);
 
@@ -114,7 +114,7 @@ export class UserService {
   async block(id: string, payload: BlockUserDto) {
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user)
-      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+      throw new HttpException("User not found", HttpStatus.BAD_REQUEST);
 
     return await this.prisma.user.update({
       where: { id },
@@ -124,7 +124,7 @@ export class UserService {
   async archive(id: string, payload: DeleteUserDto) {
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user)
-      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+      throw new HttpException("User not found", HttpStatus.BAD_REQUEST);
 
     return await this.prisma.user.update({
       where: { id },

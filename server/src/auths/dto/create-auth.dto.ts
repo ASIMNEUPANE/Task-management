@@ -4,22 +4,22 @@ import {
   IsStrongPassword,
   IsNotEmpty,
   IsOptional,
-} from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+} from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
 export class CreateAuthDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    description: 'zFull Name of the user',
-    example: 'John Doe',
+    description: "zFull Name of the user",
+    example: "John Doe",
   })
   name: string;
 
   @IsEmail()
   @IsNotEmpty()
   @ApiProperty({
-    description: 'Email of the user',
-    example: 'john@doe.com',
+    description: "Email of the user",
+    example: "john@doe.com",
   })
   email: string;
 
@@ -27,8 +27,8 @@ export class CreateAuthDto {
   @IsNotEmpty()
   @IsStrongPassword()
   @ApiProperty({
-    description: 'Password of the user',
-    example: 'Hellworld@2',
+    description: "Password of the user",
+    example: "Hellworld@2",
   })
   password: string;
 
@@ -40,16 +40,16 @@ export class VerifyDto {
   @IsEmail()
   @IsNotEmpty()
   @ApiProperty({
-    description: 'Email of the user',
-    example: 'john@doe.com',
+    description: "Email of the user",
+    example: "john@doe.com",
   })
   email: string;
 
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    description: 'Otp of the user',
-    example: '134684',
+    description: "Otp of the user",
+    example: "134684",
   })
   otp: string;
 }
@@ -58,15 +58,15 @@ export class LoginDto {
   @IsEmail()
   @IsNotEmpty()
   @ApiProperty({
-    description: 'Email of the user',
-    example: 'john@doe.com',
+    description: "Email of the user",
+    example: "john@doe.com",
   })
   email: string;
 
   @IsString()
   @ApiProperty({
-    description: 'Password of the user',
-    example: 'Hellworld@2',
+    description: "Password of the user",
+    example: "Hellworld@2",
   })
   password: string;
 }
@@ -75,8 +75,8 @@ export class GenerateFPTokenDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    description: 'Email of the user',
-    example: 'john@doe.com',
+    description: "Email of the user",
+    example: "john@doe.com",
   })
   email: string;
 }
@@ -85,23 +85,23 @@ export class ForgetPassowrdDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
-    description: 'Email of the user',
-    example: 'john@doe.com',
+    description: "Email of the user",
+    example: "john@doe.com",
   })
   email: string;
 
   @IsString()
   @ApiProperty({
-    description: 'Otp of the forgetPassword',
-    example: 'Hellworld@2',
+    description: "Otp of the forgetPassword",
+    example: "Hellworld@2",
   })
   otp: string;
 
   @IsString()
   @IsStrongPassword()
   @ApiProperty({
-    description: 'Password of the user',
-    example: 'Hellworld@2',
+    description: "Password of the user",
+    example: "Hellworld@2",
   })
   password: string;
 }

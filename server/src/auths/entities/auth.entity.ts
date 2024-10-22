@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Roles, User } from '@prisma/client';
-import { Exclude } from 'class-transformer';
+import { ApiProperty } from "@nestjs/swagger";
+import { Roles, User } from "@prisma/client";
+import { Exclude } from "class-transformer";
 
 export class AuthEntity implements User {
   constructor(partial: Partial<AuthEntity>) {
