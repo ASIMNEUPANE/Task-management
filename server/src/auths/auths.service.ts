@@ -78,7 +78,11 @@ export class AuthsService {
       const token = generateOTP();
       const authUSer = { email: user.email, otp: token };
       const x = await this.prisma.auth.create({ data: authUSer });
-      const mail = await mailer(user?.email, token);
+      const mail = await mailer(
+        user?.email,
+        "OTP Verification",
+        `<div> Hi ! Your OTP Code is <b>${token}</b></div>`,
+      );
       return user;
     } catch (e) {
       console.log(e);
@@ -116,7 +120,11 @@ export class AuthsService {
       where: { email },
       data: { otp: newToken },
     });
-    await mailer(email, newToken);
+    await mailer(
+      email,
+      "OTP Verification",
+      `<div> Hi ! Your OTP Code is <b>${newToken}</b></div>`,
+    );
     return true;
   }
 
@@ -243,7 +251,11 @@ export class AuthsService {
       await this.prisma.auth.create({ data: { email, otp } });
     }
 
-    await mailer(email, otp);
+    await mailer(
+      email,
+      "Forgot Password",
+      `<div> Hi ! Your OTP Code is <b>${otp}</b></div>`,
+    );
     return true;
   }
   async forgetPassowrd(

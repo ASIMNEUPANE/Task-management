@@ -35,13 +35,13 @@ export const ApiFile =
             description: "Is the task completed",
             example: "false",
           },
-          userId: {
-            type: "string",
-            description: "User who created the task",
-            example: "123456",
-          },
+          // userId: {
+          //   type: "string",
+          //   description: "User who created the task",
+          //   example: "123456",
+          // },
         },
-        required: ["title", "dueDate", "isCompleted", "userId"],
+        required: ["title", "dueDate", "isCompleted"],
       },
     })(target, propertyKey, descriptor);
   };

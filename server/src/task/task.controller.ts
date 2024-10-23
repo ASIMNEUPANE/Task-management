@@ -34,7 +34,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { RoleGuard } from "src/auths/guards/role.guard";
 import { Roles } from "../common/decorators/roles.decorator";
-import { Task } from "@prisma/client";
+import { Cron, CronExpression } from "@nestjs/schedule";
 
 @UseGuards(RoleGuard)
 @Controller("task")
@@ -185,5 +185,10 @@ export class TaskController {
   remove(@Param("id") id: string, @Req() req) {
     let userId = req.currentUser;
     return this.taskService.remove(id, userId);
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT) // Runs at midnight every day
+  async handleTaskReminders() {
+    await this.taskService.findTasksNearDueDate();
   }
 }

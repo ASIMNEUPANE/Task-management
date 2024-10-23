@@ -11,12 +11,16 @@ const transporter = createTransport({
   },
 });
 
-export const mailer = async (email: string, token: string) => {
+export const mailer = async (
+  email: string,
+  subject: string,
+  html: string,
+) => {
   const info = await transporter.sendMail({
     from: process.env.GMAIL_USER,
     to: email,
-    subject: "OTP Verification",
-    html: `<div> Hi ! Your OTP Code is <b>${token}</b></div>`,
+    subject,
+    html,
   });
   return info.messageId;
 };
