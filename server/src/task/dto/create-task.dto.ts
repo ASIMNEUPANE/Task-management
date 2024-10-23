@@ -56,7 +56,6 @@ export class CreateTaskDto {
   userId: string;
 }
 
-
 export interface taskType {
   title: string;
   description: string;

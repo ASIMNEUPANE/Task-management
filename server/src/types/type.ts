@@ -10,5 +10,3 @@ export type Payload = {
   id: string;
   roles: string[];
 };
-
-
