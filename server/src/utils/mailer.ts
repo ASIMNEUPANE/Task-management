@@ -11,11 +11,7 @@ const transporter = createTransport({
   },
 });
 
-export const mailer = async (
-  email: string,
-  subject: string,
-  html: string,
-) => {
+export const mailer = async (email: string, subject: string, html: string) => {
   const info = await transporter.sendMail({
     from: process.env.GMAIL_USER,
     to: email,

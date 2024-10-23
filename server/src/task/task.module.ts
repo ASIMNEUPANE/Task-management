@@ -5,9 +5,7 @@ import { PrismaModule } from "src/prisma/prisma.module";
 import { ScheduleModule } from "@nestjs/schedule";
 
 @Module({
-  imports: [
-    ScheduleModule.forRoot(),
-    PrismaModule],
+  imports: [ScheduleModule.forRoot(), PrismaModule],
 
   controllers: [TaskController],
   providers: [TaskService],
