@@ -156,10 +156,6 @@ export class AuthsService {
     const accessToken = generateJWT(payload);
     const refreshToken = generateRefreshToken(payload);
 
-    console.log("==================");
-
-    console.log("==================", refreshToken);
-
     // Store Refresh Token in the database (you may want to hash it)
     await this.prisma.token.create({
       data: {
@@ -171,7 +167,6 @@ export class AuthsService {
       },
     });
 
-    console.log("==================");
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // Ensure it's secure in production

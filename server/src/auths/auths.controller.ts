@@ -11,6 +11,7 @@ import {
   HttpStatus,
   HttpCode,
   Req,
+  UnauthorizedException,
 } from "@nestjs/common";
 import { Response, Request } from "express";
 import { ApiTags, ApiResponse, ApiOperation } from "@nestjs/swagger";
@@ -44,8 +45,12 @@ export class AuthsController {
     type: [ReturnTrueDto],
   })
   @ApiResponse({ status: 403, description: "Forbidden." })
-  refreshToken(@Body("refreshToken") refreshTokenDto: string) {
-    return this.authsService.refreshAccessToken(refreshTokenDto);
+  refreshToken(@Req() req: Request) {
+    const refreshToken = req.cookies["refreshToken"];
+    if (!refreshToken) {
+      throw new UnauthorizedException('Refresh token not found');
+    }
+    return this.authsService.refreshAccessToken(refreshToken);
   }
   // Register User
   @Post("register")

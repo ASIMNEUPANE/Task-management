@@ -26,6 +26,7 @@ export class RoleGuard implements CanActivate {
       throw new HttpException("Access token required", HttpStatus.BAD_REQUEST);
     const accessToken = token.split("Bearer ")[1];
     const { data } = verifyJWT(accessToken) as any;
+    console.log(data, "dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     if (!data) throw new Error("Data is not available");
     const { email } = data;
     const user = await this.prisma.user.findUnique({ where: { email } });

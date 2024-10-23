@@ -18,16 +18,18 @@ enum Roles {
   ADMIN
   SUPERADMIN
 }
+
 model User {
-  id              String    @id @default(uuid())
-  name            String    @unique
-  email           String    @unique
+  id              String  @id @default(uuid())
+  name            String  @unique
+  email           String  @unique
   password        String
-  isEmailVerified Boolean   @default(false)
-  isActive        Boolean   @default(false)
-  isArchive       Boolean   @default(false)
-  roles           Roles[]   @default([USER])
-  tokens          Token[]   // Relation to tokens
+  isEmailVerified Boolean @default(false)
+  isActive        Boolean @default(false)
+  isArchive       Boolean @default(false)
+  tasks           Task[] // Relation to tasks
+  roles           Roles[] @default([USER])
+  tokens          Token[] // Relation to tokens
 }
 
 model Auth {
@@ -36,12 +38,35 @@ model Auth {
   otp   String
 }
 
-
 model Token {
-  id            String   @id @default(uuid())
-  refreshToken  String   @unique
-  userId        String
-  user          User     @relation(fields: [userId], references: [id])
-  createdAt     DateTime @default(now())
-  expiresAt     DateTime // Expiry time of the refresh token
+  id           String   @id @default(uuid())
+  refreshToken String   @unique
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  createdAt    DateTime @default(now())
+  expiresAt    DateTime // Expiry time of the refresh token
+}
+
+model Task {
+  id           String         @id @default(uuid())
+  title        String
+  description  String?
+  attachment   String?
+  dueDate      DateTime
+  isCompleted  Boolean        @default(false)
+  userId       String 
+  user         User           @relation(fields: [userId], references: [id])
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  TaskReminder TaskReminder[]
+}
+
+model TaskReminder {
+  id           String   @id @default(uuid())
+  taskId       String
+  task         Task     @relation(fields: [taskId], references: [id])
+  reminderSent Boolean  @default(false)
+  remindAt     DateTime 
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }

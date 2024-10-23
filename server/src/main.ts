@@ -1,5 +1,6 @@
 import * as dotenv from "dotenv"; // Load environment variables from .env file
 dotenv.config(); // Call this to load your environment variables
+import * as cookieParser from "cookie-parser";
 
 import { Logger, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
@@ -16,6 +17,8 @@ async function bootstrap() {
     defaultVersion: "1",
   });
   app.enableCors();
+  app.use(cookieParser()); // Add this middleware
+
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,

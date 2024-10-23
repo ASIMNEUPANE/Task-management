@@ -8,8 +8,9 @@ import { PrismaModule } from "./prisma/prisma.module";
 import { RoleGuard } from "./auths/guards/role.guard";
 import { PrismaService } from "./prisma/prisma.service";
 import { APP_GUARD } from "@nestjs/core";
+import { TaskModule } from './task/task.module';
 @Module({
-  imports: [ConfigModule.forRoot(), AuthsModule, UserModule, PrismaModule],
+  imports: [ConfigModule.forRoot(), AuthsModule, UserModule, PrismaModule, TaskModule],
   controllers: [AppController],
   providers: [
     { provide: APP_GUARD, useClass: RoleGuard },
