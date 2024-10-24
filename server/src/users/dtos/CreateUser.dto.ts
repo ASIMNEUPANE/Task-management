@@ -53,7 +53,7 @@ export class GetUserDto {
   @IsOptional()
   @IsString()
   @ApiProperty({
-    description: "title of the blog",
+    description: "title of the task",
     example: "Nepal the great",
   })
   roles?: string;

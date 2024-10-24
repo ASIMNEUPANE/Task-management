@@ -43,7 +43,7 @@ const registerData = {
   password: "Helloworld@2",
 };
 
-describe("BlogService", () => {
+describe("TestService", () => {
   let service: UserService;
   let prismaService: PrismaService;
 
