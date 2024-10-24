@@ -1,5 +1,4 @@
-import { create } from 'zustand'
-
+import { create } from "zustand";
 
 type Task = {
   id: number;
@@ -11,24 +10,19 @@ type Task = {
   userId?: string | null;
   createdAt: string;
   updatedAt: string;
-  
-
-}
+};
 type TaskStateType = {
-  tasks: Task[]
-
-
-}
+  tasks: Task[];
+};
 type TaskActonsType = {
-  setTask: (newTask: Task[]) => void
-}
+  setTask: (newTask: Task[]) => void;
+};
 
 export type TaskStoreType = TaskStateType & TaskActonsType;
 
 const TaskStore = create<TaskStoreType>((set) => ({
   tasks: [],
 
-  setTask: (tasks: Task[]) =>
-    set({ tasks })
-}))
+  setTask: (tasks: Task[]) => set({ tasks }),
+}));
 export default TaskStore;

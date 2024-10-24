@@ -1,4 +1,4 @@
-"use client"
+"use client";
 export const SERVER_URL: string = "http://localhost:3333";
 
 const version: string = "/api/v1";

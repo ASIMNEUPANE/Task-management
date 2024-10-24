@@ -1,9 +1,4 @@
-
 import { PrivateRoute } from "@/components/Routes";
-
-
-
-
 
 export default function RootLayout({
   children,
@@ -12,9 +7,7 @@ export default function RootLayout({
 }>) {
   return (
     <>
-    <PrivateRoute>
-    {children }
-    </PrivateRoute>
+      <PrivateRoute>{children}</PrivateRoute>
     </>
-  )  
+  );
 }

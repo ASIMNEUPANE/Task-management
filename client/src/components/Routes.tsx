@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import { getToken } from "../utils/session";
@@ -15,38 +15,33 @@ interface PrivateRouteProps {
 }
 
 export const AdminRoute: React.FC<AdminRouteProps> = ({ children, role }) => {
-  const router = useRouter()
+  const router = useRouter();
   const isLoggedIn = checkIsLoggedIn();
   const isAdminRole = isAdmin(role);
 
   if (isLoggedIn && isAdminRole) {
-    return (
-      <>
-        {children}
-      </>
-    );
+    return <>{children}</>;
   } else if (isLoggedIn && !isAdminRole) {
-    router.push('/');
+    router.push("/");
   } else {
-    router.push('/login');
+    router.push("/login");
   }
 };
 
 export const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-  const {  isLoggedIn,  } = UserStore((state) => state);
+  const { isLoggedIn } = UserStore((state) => state);
 
   const isLogIn = isLoggedIn;
-  const router = useRouter()
+  const router = useRouter();
 
-
-  return <>{(isLogIn) ? children: router.push('/login')}</>;
+  return <>{isLogIn ? children : router.push("/login")}</>;
 };
 
 const isAdmin = (role: string | undefined): boolean => {
   if (!role) return true;
   // CHECK JWT TOKEN (Private)
   const token = getToken();
-  console.log(token)
+  console.log(token);
   if (!token) return false;
   // check for access token duration
   // @ts-ignore

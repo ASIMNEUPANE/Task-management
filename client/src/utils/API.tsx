@@ -36,7 +36,7 @@ API.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Response Interceptor: Handle access token expiration
@@ -48,17 +48,23 @@ API.interceptors.response.use(
     const originalRequest = error.config;
 
     // Check if the error is due to token expiration
-    if (error.response?.status === 401 && error.response?.data?.message === "Access token expired") {
-      
+    if (
+      error.response?.status === 401 &&
+      error.response?.data?.message === "Access token expired"
+    ) {
       if (!isRefreshing) {
         isRefreshing = true;
 
         try {
           // Call the refresh token API
-          const data = await axios.post(`${SERVER_URL}/api/v1/auths/refresh`, {}, { withCredentials: true });
-          
+          const data = await axios.post(
+            `${SERVER_URL}/api/v1/auths/refresh`,
+            {},
+            { withCredentials: true },
+          );
+
           const newAccessToken = data.access_token;
-          
+
           // Store the new access token
           window.localStorage.setItem("access_token", newAccessToken);
 
@@ -91,7 +97,7 @@ API.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default API;
