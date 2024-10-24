@@ -108,7 +108,7 @@ export class TaskController {
     @Query("page", new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Req() req,
   ) {
-    console.log("userId", req.currentUser);
+    console.log("userId===========", req.currentUser);
     let userId = req.currentUser;
     return this.taskService.findAll(limit, page, userId);
   }

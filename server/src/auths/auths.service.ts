@@ -30,7 +30,7 @@ export class AuthsService {
         where: { id: data.id },
       });
       if (!user)
-        throw new HttpException("User not found", HttpStatus.UNAUTHORIZED);
+        throw new HttpException("User not found", HttpStatus.NOT_FOUND);
 
       // Generate a new access token
       const newAccessToken = generateJWT({
@@ -41,6 +41,12 @@ export class AuthsService {
 
       return { accessToken: newAccessToken };
     } catch (error) {
+      if (error instanceof jwt.TokenExpiredError) {
+        throw new HttpException(
+          "Refresh token expired",
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
       throw new HttpException("Something went wrong", HttpStatus.BAD_GATEWAY);
     }
   }

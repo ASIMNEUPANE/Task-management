@@ -135,6 +135,7 @@ export class AuthsController {
   })
   @ApiResponse({ status: 403, description: "Forbidden." })
   async login(@Body() loginDto: LoginDto, @Res() res: Response) {
+    console.log(loginDto, "loginDto");
     const loginResult = await this.authsService.login(
       loginDto.email,
       loginDto.password,

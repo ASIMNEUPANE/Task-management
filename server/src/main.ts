@@ -16,7 +16,10 @@ async function bootstrap() {
     type: VersioningType.URI,
     defaultVersion: "1",
   });
-  app.enableCors();
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  });
   app.use(cookieParser()); // Add this middleware
 
   app.useGlobalPipes(
