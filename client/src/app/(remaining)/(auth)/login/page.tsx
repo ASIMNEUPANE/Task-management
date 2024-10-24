@@ -86,7 +86,7 @@ export default function login() {
 
         <div className="max-w-80 grid gap-5">
           <h1 className="text-5xl font-bold text-white">Login</h1>
-          <p className="text-white">Access to the best blogs</p>
+          <p className="text-white">Access to the best tasks</p>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="space-y-6 text-white"

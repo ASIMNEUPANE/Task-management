@@ -57,13 +57,13 @@ API.interceptors.response.use(
 
         try {
           // Call the refresh token API
-          const data = await axios.post(
+          const { data } = await axios.post(
             `${SERVER_URL}/api/v1/auths/refresh`,
             {},
             { withCredentials: true },
           );
 
-          const newAccessToken = data.access_token;
+          const newAccessToken = data.accessToken;
 
           // Store the new access token
           window.localStorage.setItem("access_token", newAccessToken);

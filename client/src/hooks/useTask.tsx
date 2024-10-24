@@ -9,7 +9,7 @@ const useTask = (page: number, limit: number) => {
   const str = JSON.stringify({ page, limit });
 
   const qn = useQuery({
-    queryKey: ["getblogs", str],
+    queryKey: ["getTasks", str],
     queryFn: async () => {
       const params = {
         page: page,

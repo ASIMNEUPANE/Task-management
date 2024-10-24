@@ -3,7 +3,7 @@ export default function Home() {
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-700">
       <div className="max-w-6xl mx-auto px-6">
         <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white text-center mb-12">
-          Welcome to the Best Blog Site in the World
+          Welcome to the Your Task List Site in the World
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           <div className="bg-white bg-opacity-30 rounded-lg p-8 shadow-lg">

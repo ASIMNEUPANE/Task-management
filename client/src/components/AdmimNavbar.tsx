@@ -14,7 +14,7 @@ function AdminNavbar() {
   return (
     <div className="flex gap-11 bg-slate-900 ">
       <div className=" rounded-sm m-4 hover:text-gray-300 text-red-50 px-3 py-2">
-        <Link href={"/admin/blog"}>Blogs</Link>
+        <Link href={"/admin/task"}>Task</Link>
       </div>
       <div className=" rounded-sm m-4 hover:text-gray-300 text-red-50 px-3 py-2">
         <Link href={"/admin/user"}>Users</Link>

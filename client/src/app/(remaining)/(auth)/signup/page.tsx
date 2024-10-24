@@ -72,7 +72,7 @@ function Page() {
 
         <div className="max-w-80 grid gap-5">
           <h1 className="text-5xl font-bold text-white">Register</h1>
-          <p className="text-white">create a account to access blogs</p>
+          <p className="text-white">create a account to access task</p>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="space-y-6 text-white"

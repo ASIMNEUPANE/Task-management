@@ -59,7 +59,9 @@ describe("TaskService", () => {
 
       const result = await service.create(createTaskDto);
       expect(result).toEqual(mockTask);
-      expect(prismaService.task.create).toHaveBeenCalledWith({ data: createTaskDto });
+      expect(prismaService.task.create).toHaveBeenCalledWith({
+        data: createTaskDto,
+      });
     });
 
     it("should throw an error if task is not created", async () => {
@@ -157,25 +159,40 @@ describe("TaskService", () => {
   describe("sendTaskReminder", () => {
     it("should send task reminder email", async () => {
       jest.spyOn(mailer, "mailer").mockResolvedValue(null);
-      await service.sendTaskReminder("user@example.com", "Test Task", new Date());
+      await service.sendTaskReminder(
+        "user@example.com",
+        "Test Task",
+        new Date(),
+      );
 
       expect(mailer).toHaveBeenCalledWith(
         "user@example.com",
         "Task Reminder: Test Task",
-        expect.stringContaining("Your task \"Test Task\" is nearing its deadline."),
+        expect.stringContaining(
+          'Your task "Test Task" is nearing its deadline.',
+        ),
       );
     });
   });
 
   describe("findTasksNearDueDate", () => {
     it("should find tasks near due date", async () => {
-      const nearDueTask = { ...mockTask, dueDate: new Date(Date.now() + 12 * 60 * 60 * 1000) };
-      jest.spyOn(prismaService.task, "findMany").mockResolvedValue([nearDueTask]);
+      const nearDueTask = {
+        ...mockTask,
+        dueDate: new Date(Date.now() + 12 * 60 * 60 * 1000),
+      };
+      jest
+        .spyOn(prismaService.task, "findMany")
+        .mockResolvedValue([nearDueTask]);
       jest.spyOn(service, "sendTaskReminder").mockResolvedValue(null);
 
       await service.findTasksNearDueDate();
 
-      expect(service.sendTaskReminder).toHaveBeenCalledWith(nearDueTask.user.email, nearDueTask.title, nearDueTask.dueDate);
+      expect(service.sendTaskReminder).toHaveBeenCalledWith(
+        nearDueTask.user.email,
+        nearDueTask.title,
+        nearDueTask.dueDate,
+      );
     });
   });
 });

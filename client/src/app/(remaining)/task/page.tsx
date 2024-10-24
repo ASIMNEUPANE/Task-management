@@ -14,7 +14,7 @@ import { URLS } from "@/constants";
 import { useEffect } from "react";
 import TaskStore from "@/store/TaskStore";
 
-export default function Blog() {
+export default function Task() {
   const { tasks, setTask } = TaskStore((state) => state);
 
   const { isLoading, isError, data } = useList(
@@ -77,10 +77,7 @@ export default function Blog() {
                   "https://media.istockphoto.com/id/637696304/photo/patan.jpg?s=612x612&w=0&k=20&c=-53aSTGBGoOOqX5aoC3Hs1jhZ527v3Id_xOawHHVPpg="
                 }
               ></img>
-              {/* <img src={blogItem.images ? blogItem.images : ''} alt={blogItem.title}></img> */}{" "}
-              <CardContent>
-                {/* <img className="w-80" src={blogItem.images} alt={blogItem.title} /> */}
-              </CardContent>
+              <CardContent></CardContent>
               <CardFooter>
                 <h2>By: {taskItem.userId}</h2>
               </CardFooter>
@@ -91,5 +88,5 @@ export default function Blog() {
     );
   }
 
-  return null; // Render nothing if no blogs are available yet
+  return null;
 }
