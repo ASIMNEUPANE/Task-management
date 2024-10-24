@@ -36,5 +36,5 @@ The Task Management Application is a comprehensive web platform that enables use
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
-   cd <repository-directory>
+   git clone git@github.com:ASIMNEUPANE/Task-management.git
+    ```
