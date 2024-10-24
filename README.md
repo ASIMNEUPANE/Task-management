@@ -16,6 +16,7 @@ The Task Management Application is a comprehensive web platform that enables use
 - **Code Quality Tools**: Prettier and ESLint for code formatting and linting.
 - **Pre-commit Hooks**: Husky is used to enforce quality checks before commits.
 - **Database Management**: Prisma ORM is utilized for database interactions, with PostgreSQL as the database solution.
+- **Docker Support**: The application is containerized with Docker, making it easy to run and deploy.
 
 ## Technologies Used
 
@@ -29,6 +30,7 @@ The Task Management Application is a comprehensive web platform that enables use
 - **API Documentation**: Swagger
 - **Code Quality**: Prettier, ESLint
 - **Pre-commit Hooks**: Husky
+- **Containerization**: Docker
 
 ## Installation
 
